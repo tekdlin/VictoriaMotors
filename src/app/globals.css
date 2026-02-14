@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-playfair: 'Playfair Display', serif;
+    --font-dm-sans: 'DM Sans', sans-serif;
+    --font-jetbrains: 'JetBrains Mono', monospace;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans text-victoria-navy-900 bg-white antialiased;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-victoria-slate-100;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-victoria-slate-300 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-victoria-slate-400;
+  }
+}
+
+@layer components {
+  /* Form input focus states */
+  .form-input-focus {
+    @apply focus:outline-none focus:ring-2 focus:ring-victoria-navy-500 focus:border-transparent;
+  }
+
+  /* Card hover effect */
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-victoria-lg hover:-translate-y-1;
+  }
+
+  /* Gold accent line */
+  .gold-accent {
+    @apply relative;
+  }
+  
+  .gold-accent::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-12 h-1 bg-victoria-gold-500 rounded-full;
+  }
+
+  /* Gradient text */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-victoria-navy-900 to-victoria-navy-700;
+  }
+
+  /* Status indicators */
+  .status-dot {
+    @apply w-2 h-2 rounded-full;
+  }
+
+  .status-dot-active {
+    @apply bg-emerald-500;
+  }
+
+  .status-dot-pending {
+    @apply bg-amber-500;
+  }
+
+  .status-dot-inactive {
+    @apply bg-victoria-slate-400;
+  }
+
+  .status-dot-error {
+    @apply bg-red-500;
+  }
+
+  /* Table styles */
+  .table-container {
+    @apply overflow-x-auto rounded-xl border border-victoria-slate-200;
+  }
+
+  .table-header {
+    @apply bg-victoria-slate-50 text-victoria-slate-600 text-xs font-semibold uppercase tracking-wider;
+  }
+
+  .table-row {
+    @apply border-b border-victoria-slate-100 hover:bg-victoria-slate-50 transition-colors;
+  }
+
+  .table-cell {
+    @apply px-6 py-4 text-sm;
+  }
+
+  /* Skeleton loading */
+  .skeleton {
+    @apply animate-pulse bg-victoria-slate-200 rounded;
+  }
+
+  /* Section spacing */
+  .section-padding {
+    @apply py-16 md:py-24;
+  }
+
+  /* Container */
+  .container-narrow {
+    @apply max-w-3xl mx-auto px-4 sm:px-6;
+  }
+
+  .container-wide {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Text balance for headings */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Backdrop blur fallback */
+  .backdrop-blur-fallback {
+    @apply backdrop-blur-sm;
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+
+  @supports (backdrop-filter: blur(8px)) {
+    .backdrop-blur-fallback {
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+
+/* Animation classes */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
