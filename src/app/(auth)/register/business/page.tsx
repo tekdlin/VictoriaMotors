@@ -14,7 +14,7 @@ import {
 import { Button, Input, Select, Alert, Card, CardContent, Checkbox } from '@/components/ui';
 import { FileUpload } from '@/components/ui/FileUpload';
 import { TermsModal } from '@/components/forms/TermsModal';
-import { ArrowLeft, ArrowRight, Shield, CreditCard, Building2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Shield, CreditCard, Building2, Loader2 } from 'lucide-react';
 import { useBusinessRegistration } from '@/hooks';
 
 const US_STATES = [
@@ -79,7 +79,7 @@ export default function BusinessRegistrationPage() {
   const validateStep = async (currentStep: Step): Promise<boolean> => {
     switch (currentStep) {
       case 1:
-        return await trigger(['business_name', 'business_ein', 'business_contact_name', 'email', 'phone']);
+        return await trigger(['business_name', 'business_ein', 'business_contact_name', 'email', 'password', 'phone']);
       case 2:
         return await trigger(['address_line1', 'city', 'state', 'zip_code']);
       case 3:
@@ -213,6 +213,14 @@ export default function BusinessRegistrationPage() {
               placeholder="contact@acme.com"
               error={errors.email?.message}
               {...register('email')}
+            />
+            <Input
+              label="Password"
+              type="password"
+              placeholder="••••••••"
+              autoComplete="new-password"
+              error={errors.password?.message}
+              {...register('password')}
             />
             <Input
               label="Business Phone"
@@ -416,9 +424,9 @@ export default function BusinessRegistrationPage() {
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           ) : (
-            <Button type="submit" loading={loading || registration.isCheckoutPending}>
-              Complete Registration
-              <ArrowRight className="w-4 h-4 ml-2" />
+            <Button type="submit" disabled={loading || registration.isCheckoutPending}>
+              {loading || registration.isCheckoutPending ? 'Completing Registration...' : 'Complete Registration'}
+              {loading || registration.isCheckoutPending ? <Loader2 className="w-4 h-4 ml-2" /> : <ArrowRight className="w-4 h-4 ml-2" />}
             </Button>
           )}
         </div>

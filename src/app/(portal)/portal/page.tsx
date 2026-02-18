@@ -1,9 +1,8 @@
-import { redirect } from 'next/navigation';
+'use client';
+
+import { useEffect } from 'react';
 import Link from 'next/link';
-import { getCurrentUser } from '@/server/services/auth.service';
-import { getCustomerByUserId } from '@/server/services/customer.service';
-import { getPaymentsByCustomerId } from '@/server/services/payment.service';
-import { getInvoicesByCustomerId } from '@/server/services/invoice.service';
+import { useRouter } from 'next/navigation';
 import { formatCurrency, formatDate, capitalize } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle, Badge, Button } from '@/components/ui';
 import {
@@ -19,22 +18,62 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { ManageSubscriptionButton } from '@/components/features/ManageSubscriptionButton';
+import { useMe, useMePayments, useMeInvoices } from '@/hooks/api';
 
-export default async function PortalDashboardPage() {
-  const { user, error } = await getCurrentUser();
-  if (error || !user) redirect('/login');
+export default function PortalDashboardPage() {
+  const router = useRouter();
+  const customerQuery = useMe();
+  const paymentsQuery = useMePayments({ limit: 5, enabled: !!customerQuery.data });
+  const invoicesQuery = useMeInvoices({ limit: 3, enabled: !!customerQuery.data });
 
-  const customer = await getCustomerByUserId(user.id);
-  if (!customer) redirect('/register');
+  const customer = customerQuery.data;
+  const recentPayments = paymentsQuery.data ?? [];
+  const recentInvoices = invoicesQuery.data ?? [];
 
-  const [recentPayments, recentInvoices] = await Promise.all([
-    getPaymentsByCustomerId(customer.id, 5),
-    getInvoicesByCustomerId(customer.id, 3),
-  ]);
+  useEffect(() => {
+    if (!customerQuery.error) return;
+    const msg = (customerQuery.error as Error).message ?? '';
+    if (msg.includes('Unauthorized')) {
+      router.replace('/login');
+      return;
+    }
+    if (msg.includes('Customer not found')) {
+      router.replace('/register');
+    }
+  }, [customerQuery.error, router]);
 
-  const depositProgress = customer.security_deposit_required > 0
-    ? (customer.security_deposit_paid / customer.security_deposit_required) * 100
-    : 0;
+  const authErrorMsg = customerQuery.error ? (customerQuery.error as Error).message ?? '' : '';
+  const isAuthRedirect =
+    authErrorMsg.includes('Unauthorized') || authErrorMsg.includes('Customer not found');
+
+  if (customerQuery.isLoading || (customerQuery.isError && isAuthRedirect)) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-victoria-navy-900 border-t-transparent" />
+        <p className="mt-4 text-sm text-victoria-slate-600">
+          {customerQuery.isError && isAuthRedirect ? 'Redirecting…' : 'Loading your dashboard…'}
+        </p>
+      </div>
+    );
+  }
+
+  if (customerQuery.isError) {
+    return (
+      <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
+        <p className="font-medium text-red-800">Could not load your dashboard</p>
+        <p className="mt-1 text-sm text-red-700">
+          {(customerQuery.error as Error).message}
+        </p>
+      </div>
+    );
+  }
+
+  if (!customer) return null;
+
+  const depositProgress =
+    customer.security_deposit_required > 0
+      ? (customer.security_deposit_paid / customer.security_deposit_required) * 100
+      : 0;
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -45,7 +84,7 @@ export default async function PortalDashboardPage() {
             Dashboard
           </h1>
           <p className="text-victoria-slate-600 mt-1">
-            Welcome back! Here's an overview of your account.
+            Welcome back! Here&apos;s an overview of your account.
           </p>
         </div>
         <Link href="/portal/topup">
@@ -58,31 +97,39 @@ export default async function PortalDashboardPage() {
 
       {/* Account Status Alert */}
       {customer.account_status !== 'active' && (
-        <div className={`p-4 rounded-xl flex items-start gap-3 ${
-          customer.account_status === 'payment_pending'
-            ? 'bg-amber-50 border border-amber-200'
-            : 'bg-red-50 border border-red-200'
-        }`}>
-          <AlertCircle className={`w-5 h-5 mt-0.5 ${
+        <div
+          className={`p-4 rounded-xl flex items-start gap-3 ${
             customer.account_status === 'payment_pending'
-              ? 'text-amber-600'
-              : 'text-red-600'
-          }`} />
-          <div>
-            <p className={`font-medium ${
+              ? 'bg-amber-50 border border-amber-200'
+              : 'bg-red-50 border border-red-200'
+          }`}
+        >
+          <AlertCircle
+            className={`w-5 h-5 mt-0.5 ${
               customer.account_status === 'payment_pending'
-                ? 'text-amber-800'
-                : 'text-red-800'
-            }`}>
+                ? 'text-amber-600'
+                : 'text-red-600'
+            }`}
+          />
+          <div>
+            <p
+              className={`font-medium ${
+                customer.account_status === 'payment_pending'
+                  ? 'text-amber-800'
+                  : 'text-red-800'
+              }`}
+            >
               {customer.account_status === 'payment_pending'
                 ? 'Payment Required'
                 : 'Account Closed'}
             </p>
-            <p className={`text-sm ${
-              customer.account_status === 'payment_pending'
-                ? 'text-amber-700'
-                : 'text-red-700'
-            }`}>
+            <p
+              className={`text-sm ${
+                customer.account_status === 'payment_pending'
+                  ? 'text-amber-700'
+                  : 'text-red-700'
+              }`}
+            >
               {customer.account_status === 'payment_pending'
                 ? 'Please complete your payment to activate your account.'
                 : 'Your account has been closed. Please contact support for assistance.'}
@@ -172,24 +219,28 @@ export default async function PortalDashboardPage() {
 
       {/* Main Content Grid */}
       <div className="grid lg:grid-cols-3 gap-8">
-        {/* Recent Activity */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Recent Payments */}
           <Card variant="bordered">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <CreditCard className="w-5 h-5 text-victoria-navy-700" />
                 Recent Payments
               </CardTitle>
-              <Link href="/portal/payments" className="text-sm text-victoria-navy-700 hover:text-victoria-navy-900">
+              <Link
+                href="/portal/payments"
+                className="text-sm text-victoria-navy-700 hover:text-victoria-navy-900"
+              >
                 View All →
               </Link>
             </CardHeader>
             <CardContent>
-              {recentPayments && recentPayments.length > 0 ? (
+              {recentPayments.length > 0 ? (
                 <div className="divide-y divide-victoria-slate-100">
                   {recentPayments.map((payment) => (
-                    <div key={payment.id} className="py-3 flex items-center justify-between">
+                    <div
+                      key={payment.id}
+                      className="py-3 flex items-center justify-between"
+                    >
                       <div>
                         <p className="font-medium text-victoria-navy-900">
                           {capitalize(payment.payment_type.replace('_', ' '))}
@@ -217,22 +268,27 @@ export default async function PortalDashboardPage() {
             </CardContent>
           </Card>
 
-          {/* Recent Invoices */}
           <Card variant="bordered">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-victoria-navy-700" />
                 Recent Invoices
               </CardTitle>
-              <Link href="/portal/invoices" className="text-sm text-victoria-navy-700 hover:text-victoria-navy-900">
+              <Link
+                href="/portal/invoices"
+                className="text-sm text-victoria-navy-700 hover:text-victoria-navy-900"
+              >
                 View All →
               </Link>
             </CardHeader>
             <CardContent>
-              {recentInvoices && recentInvoices.length > 0 ? (
+              {recentInvoices.length > 0 ? (
                 <div className="divide-y divide-victoria-slate-100">
                   {recentInvoices.map((invoice) => (
-                    <div key={invoice.id} className="py-3 flex items-center justify-between">
+                    <div
+                      key={invoice.id}
+                      className="py-3 flex items-center justify-between"
+                    >
                       <div>
                         <p className="font-medium text-victoria-navy-900">
                           Invoice #{invoice.stripe_invoice_id.slice(-8)}
@@ -273,9 +329,7 @@ export default async function PortalDashboardPage() {
           </Card>
         </div>
 
-        {/* Sidebar */}
         <div className="space-y-6">
-          {/* Account Details */}
           <Card variant="bordered">
             <CardHeader>
               <CardTitle>Account Details</CardTitle>
@@ -306,7 +360,6 @@ export default async function PortalDashboardPage() {
             </CardContent>
           </Card>
 
-          {/* Quick Actions */}
           <Card variant="bordered">
             <CardHeader>
               <CardTitle>Quick Actions</CardTitle>
@@ -328,7 +381,6 @@ export default async function PortalDashboardPage() {
             </CardContent>
           </Card>
 
-          {/* Member Since */}
           <Card variant="bordered" className="bg-victoria-navy-900 text-white">
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-4">
@@ -345,4 +397,3 @@ export default async function PortalDashboardPage() {
     </div>
   );
 }
-

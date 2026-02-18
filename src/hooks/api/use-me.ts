@@ -21,11 +21,11 @@ export function useMe(options?: { enabled?: boolean }) {
   });
 }
 
-export function useMePayments(options?: { enabled?: boolean }) {
+export function useMePayments(options?: { enabled?: boolean; limit?: number }) {
   return useQuery({
-    queryKey: meKeys.payments(),
+    queryKey: [...meKeys.payments(), options?.limit],
     queryFn: async () => {
-      const res = await api.me.getPayments();
+      const res = await api.me.getPayments(options?.limit != null ? { limit: options.limit } : undefined);
       if (res.error) throw new Error(res.error);
       return res.data!.payments;
     },
@@ -33,11 +33,11 @@ export function useMePayments(options?: { enabled?: boolean }) {
   });
 }
 
-export function useMeInvoices(options?: { enabled?: boolean }) {
+export function useMeInvoices(options?: { enabled?: boolean; limit?: number }) {
   return useQuery({
-    queryKey: meKeys.invoices(),
+    queryKey: [...meKeys.invoices(), options?.limit],
     queryFn: async () => {
-      const res = await api.me.getInvoices();
+      const res = await api.me.getInvoices(options?.limit != null ? { limit: options.limit } : undefined);
       if (res.error) throw new Error(res.error);
       return res.data!.invoices;
     },

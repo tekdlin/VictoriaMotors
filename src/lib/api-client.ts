@@ -116,10 +116,14 @@ export const api = {
         method: 'POST',
         body: JSON.stringify(body),
       }),
-    getPayments: () =>
-      request<{ payments: import('@/server/types').PaymentRow[] }>('/api/me/payments'),
-    getInvoices: () =>
-      request<{ invoices: import('@/server/types').InvoiceRow[] }>('/api/me/invoices'),
+    getPayments: (params?: { limit?: number }) => {
+      const q = params?.limit != null ? `?limit=${params.limit}` : '';
+      return request<{ payments: import('@/server/types').PaymentRow[] }>(`/api/me/payments${q}`);
+    },
+    getInvoices: (params?: { limit?: number }) => {
+      const q = params?.limit != null ? `?limit=${params.limit}` : '';
+      return request<{ invoices: import('@/server/types').InvoiceRow[] }>(`/api/me/invoices${q}`);
+    },
     getDocuments: () =>
       request<{ documents: import('@/server/types').DocumentRow[] }>('/api/me/documents'),
   },

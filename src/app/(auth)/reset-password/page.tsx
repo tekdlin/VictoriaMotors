@@ -24,10 +24,12 @@ const resetPasswordSchema = z
 
 type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 
+type PageStatus = 'loading' | 'ready' | 'invalid' | 'success';
+
 export default function ResetPasswordPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [status, setStatus] = useState<'ready' | 'success'>('ready');
+  const [status, setStatus] = useState<PageStatus>('loading');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -41,32 +43,114 @@ export default function ResetPasswordPage() {
     resolver: zodResolver(resetPasswordSchema),
   });
 
+  // Recover session from reset link: Supabase redirects with ?code=... (PKCE); we exchange it for a session
+  useEffect(() => {
+    let cancelled = false;
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (cancelled) return;
+      if (session && (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN')) {
+        setStatus('ready');
+      }
+    });
+
+    async function recoverSession() {
+      const code = searchParams.get('code');
+      if (code) {
+        const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+        if (cancelled) return;
+        if (!exchangeError && data?.session) {
+          setStatus('ready');
+          window.history.replaceState(null, '', window.location.pathname);
+          return;
+        }
+        const msg = exchangeError?.message ?? '';
+        setError(
+          msg.includes('verifier') || msg.includes('PKCE') || msg.includes('code_verifier')
+            ? 'Use the same browser where you requested the reset (e.g. open forgot-password here, submit your email, then use the new link in that same window or tab).'
+            : msg || 'This link is invalid or has expired.'
+        );
+        setStatus('invalid');
+        return;
+      }
+      const { data: { session } } = await supabase.auth.getSession();
+      if (cancelled) return;
+      if (session) {
+        setStatus('ready');
+        return;
+      }
+      setStatus('invalid');
+    }
+
+    recoverSession();
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
+  }, [searchParams]);
+
   const onSubmit = async (data: ResetPasswordInput) => {
     setError(null);
     setLoading(true);
-    const res = await api.auth.resetPassword({ password: data.password });
-    if (res.status === 401) {
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: data.password,
-      });
-      setLoading(false);
-      if (updateError) {
-        setError(updateError.message);
+    try {
+      const res = await api.auth.resetPassword({ password: data.password });
+      if (res.status === 401) {
+        const { error: updateError } = await supabase.auth.updateUser({
+          password: data.password,
+        });
+        if (updateError) {
+          setError(updateError.message);
+          return;
+        }
+      } else if (res.error) {
+        setError(res.error);
         return;
       }
-    } else if (res.error) {
-      setLoading(false);
-      setError(res.error);
-      return;
-    } else {
+      setStatus('success');
+      setTimeout(() => {
+        router.push('/login?reset=success');
+        router.refresh();
+      }, 1500);
+    } finally {
       setLoading(false);
     }
-    setStatus('success');
-    setTimeout(() => {
-      router.push('/login?reset=success');
-      router.refresh();
-    }, 1500);
   };
+
+  if (status === 'loading') {
+    return (
+      <div className="flex flex-col items-center justify-center py-12">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-victoria-navy-900 border-t-transparent" />
+        <p className="mt-4 text-sm text-victoria-slate-600">Verifying your link…</p>
+      </div>
+    );
+  }
+
+  if (status === 'invalid') {
+    return (
+      <div>
+        <div className="mx-auto mb-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/15 text-amber-600 shadow-lg ring-2 ring-amber-500/20">
+          <AlertCircle className="h-8 w-8" aria-hidden="true" />
+        </div>
+        <h2 className="font-display text-2xl font-bold text-victoria-navy-900 mb-2">
+          Link expired or invalid
+        </h2>
+        <p className="text-victoria-slate-600 mb-8">
+          {error || 'This reset link is no longer valid. Request a new one and use it within an hour.'}
+        </p>
+        <Link
+          href="/forgot-password"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-victoria-navy-900 px-7 py-3.5 text-base font-medium text-white shadow-victoria transition-all hover:bg-victoria-navy-800 focus:outline-none focus:ring-2 focus:ring-victoria-navy-500 focus:ring-offset-2"
+        >
+          Request new link
+        </Link>
+        <p className="mt-6 text-center text-victoria-slate-600">
+          <Link href="/login" className="text-victoria-navy-700 hover:text-victoria-navy-900 font-medium">
+            Back to sign in
+          </Link>
+        </p>
+      </div>
+    );
+  }
 
   if (status === 'success') {
     return (

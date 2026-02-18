@@ -1,11 +1,11 @@
 'use client';
 
 import { useCallback } from 'react';
-import { api } from '@/lib/api-client';
-import { useSignUp, useStripeCheckout } from '@/hooks/api';
+import { useLogin, useSignUp, useStripeCheckout } from '@/hooks/api';
 import type { BusinessRegistrationInput } from '@/lib/validations';
 import type { RegisterCustomerBody } from '@/types/api';
 import { calculateSecurityDeposit } from '@/lib/stripe/plans';
+import { api } from '@/lib/api-client';
 
 /**
  * Business registration flow via API only: sign-up -> login (session) -> register customer -> upload doc -> checkout.
@@ -13,6 +13,7 @@ import { calculateSecurityDeposit } from '@/lib/stripe/plans';
 export function useBusinessRegistration() {
   const checkoutMutation = useStripeCheckout();
   const signUpMutation = useSignUp();
+  const loginMutation = useLogin();
 
   const submit = useCallback(
     async (params: {
@@ -22,22 +23,20 @@ export function useBusinessRegistration() {
       const { data, businessDoc } = params;
       const securityDeposit = calculateSecurityDeposit(data.purchase_value);
 
-      // 1. Create auth user (API) then establish session (login API)
-      const signUpRes = await api.auth.signUp({
-        email: data.email,
-        password: data.password,
-        business_name: data.business_name,
-        contact_name: data.business_contact_name,
-      });
-      if (signUpRes.error) throw new Error(signUpRes.error);
-
-      const loginRes = await api.auth.login({
+      // 1. Create auth user (API) – does not set session
+      const signUpRes = await signUpMutation.mutateAsync({
         email: data.email,
         password: data.password,
       });
-      if (loginRes.error) throw new Error(loginRes.error ?? 'Failed to sign in');
+      if (!signUpRes?.success) throw new Error('Failed to sign up');
 
-      // 2. Create customer via API (server uses session)
+      // 2. Log in to establish session cookies (required for api.me.register)
+      await loginMutation.mutateAsync({
+        email: data.email,
+        password: data.password,
+      });
+
+      // 3. Create customer via API (server reads session from cookies)
       const registerBody: RegisterCustomerBody = {
         account_type: 'business',
         account_status: 'payment_pending',
@@ -63,11 +62,11 @@ export function useBusinessRegistration() {
         throw new Error(registerRes.error ?? 'Failed to create customer');
       }
 
-      // 3. Upload document via API (server uploads to storage and creates record)
+      // 4. Upload document via API (server uploads to storage and creates record)
       const docRes = await api.me.uploadDocument(businessDoc, 'business_registration');
       if (docRes.error) throw new Error(docRes.error);
 
-      // 4. Redirect to Stripe checkout
+      // 5. Redirect to Stripe checkout
       const url = await checkoutMutation.mutateAsync({
         customerId: registerRes.data.customer.id,
         email: data.email,
@@ -76,7 +75,7 @@ export function useBusinessRegistration() {
       });
       if (url) window.location.href = url;
     },
-    [checkoutMutation]
+    [checkoutMutation, signUpMutation, loginMutation]
   );
 
   return {

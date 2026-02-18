@@ -15,7 +15,7 @@ import {
 import { Button, Input, Select, Alert, Card, CardContent, Checkbox } from '@/components/ui';
 import { FileUpload } from '@/components/ui/FileUpload';
 import { TermsModal } from '@/components/forms/TermsModal';
-import { ArrowLeft, ArrowRight, Shield, CreditCard } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Shield, CreditCard, Eye, EyeOff } from 'lucide-react';
 import { useIndividualRegistration } from '@/hooks';
 
 const US_STATES = [
@@ -58,6 +58,7 @@ export default function IndividualRegistrationPage() {
 
   const [licenseFront, setLicenseFront] = useState<File | null>(null);
   const [licenseBack, setLicenseBack] = useState<File | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -205,13 +206,24 @@ export default function IndividualRegistrationPage() {
               error={errors.email?.message}
               {...register('email')}
             />
-            <Input
-              label="Password"
-              type="password"
-              placeholder="••••••••"
-              error={errors.password?.message}
-              {...register('password')}
-            />
+            <div className="relative">
+              <Input
+                label="Password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="••••••••"
+                error={errors.password?.message}
+                className="pr-10"
+                {...register('password')}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((p) => !p)}
+                className="absolute right-4 top-10 text-victoria-slate-400 hover:text-victoria-navy-700 focus:outline-none"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
+            </div>
             <Input
               label="Phone Number"
               type="tel"

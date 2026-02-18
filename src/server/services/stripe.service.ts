@@ -67,7 +67,7 @@ export async function createCheckoutSession(
       security_deposit: securityDeposit.toString(),
       purchase_value: purchaseValue.toString(),
     },
-    success_url: `${APP_URL}/portal?session_id={CHECKOUT_SESSION_ID}&success=true`,
+    success_url: `${APP_URL}/email-confirmation`,
     cancel_url: `${APP_URL}/register?canceled=true`,
     allow_promotion_codes: true,
   });

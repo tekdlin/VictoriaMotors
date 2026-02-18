@@ -42,31 +42,31 @@ const ROUTE_CONFIG: Record<
     icon: <UserPlus className="w-8 h-8 text-victoria-gold-400" />,
   },
   '/email-confirmation': {
-    headline: 'Check Your Inbox',
+    headline: 'Payment Complete',
     description:
-      'We’ve sent a secure confirmation link to your email. Click it to verify and activate your account.',
-    showStats: false,
+      'Your payment was successful. Check your email to confirm your address, then sign in to access your portal.',
+    showStats: true,
     icon: <Mail className="w-8 h-8 text-victoria-gold-400" />,
   },
   '/email-verified': {
     headline: "You're All Set",
     description:
       'Your email is verified. Sign in with your credentials to access your Victoria Motors portal.',
-    showStats: false,
+    showStats: true,
     icon: <CheckCircle2 className="w-8 h-8 text-emerald-400" />,
   },
   '/forgot-password': {
     headline: 'Reset Your Password',
     description:
       'Enter the email address for your account and we’ll send you a secure link to set a new password.',
-    showStats: false,
+    showStats: true,
     icon: <KeyRound className="w-8 h-8 text-victoria-gold-400" />,
   },
   '/reset-password': {
     headline: 'Set a New Password',
     description:
       'Choose a strong password for your account. You’ll use it to sign in from here on.',
-    showStats: false,
+    showStats: true,
     icon: <KeyRound className="w-8 h-8 text-victoria-gold-400" />,
   },
 };
