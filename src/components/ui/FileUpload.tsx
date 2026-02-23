@@ -101,12 +101,12 @@ export function FileUpload({
 
   return (
     <div className="w-full">
-      <label className="block text-sm font-medium text-victoria-navy-800 mb-1.5">
+      <label className="block text-sm font-medium text-victoria-navy-800 mb-1.5 tracking-tight">
         {label}
       </label>
 
       {currentFile ? (
-        <div className="flex items-center justify-between p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+        <div className="flex items-center justify-between p-4 bg-emerald-50/80 border border-emerald-200/80 rounded-xl">
           <div className="flex items-center gap-3">
             <FileCheck className="h-5 w-5 text-emerald-600" />
             <span className="text-sm text-emerald-800 font-medium">
@@ -130,12 +130,12 @@ export function FileUpload({
           onDragOver={handleDrag}
           onDrop={handleDrop}
           className={cn(
-            'relative flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg transition-all duration-200 cursor-pointer',
+            'relative flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-xl transition-all duration-200 cursor-pointer',
             dragActive
-              ? 'border-victoria-navy-500 bg-victoria-navy-50'
+              ? 'border-victoria-navy-400 bg-victoria-navy-50/50'
               : displayError
-              ? 'border-red-300 bg-red-50'
-              : 'border-victoria-slate-300 hover:border-victoria-slate-400 bg-victoria-slate-50'
+              ? 'border-red-300 bg-red-50/80'
+              : 'border-victoria-slate-200 hover:border-victoria-slate-300 bg-victoria-slate-50/50'
           )}
         >
           <input

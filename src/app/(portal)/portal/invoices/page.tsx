@@ -16,22 +16,27 @@ export default async function InvoicesPage() {
   const invoices = await getInvoicesByCustomerId(customer.id);
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-8 lg:space-y-10 animate-fade-in">
       {/* Header */}
       <div>
-        <h1 className="font-display text-3xl font-bold text-victoria-navy-900">
+        <p className="text-sm font-medium text-victoria-gold-600 uppercase tracking-widest mb-2">
+          Billing
+        </p>
+        <h1 className="font-display text-3xl sm:text-4xl font-bold text-victoria-navy-900 tracking-tight">
           Invoices
         </h1>
-        <p className="text-victoria-slate-600 mt-1">
+        <p className="text-victoria-slate-600 mt-1.5 max-w-lg">
           View and download your billing invoices.
         </p>
       </div>
 
       {/* Invoices Table */}
-      <Card variant="bordered">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="w-5 h-5 text-victoria-navy-700" />
+      <Card variant="bordered" className="rounded-3xl border-victoria-slate-200/80 shadow-sm overflow-hidden">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <div className="w-9 h-9 rounded-xl bg-victoria-navy-50 flex items-center justify-center">
+              <FileText className="w-4 h-4 text-victoria-navy-700" />
+            </div>
             All Invoices
           </CardTitle>
         </CardHeader>
@@ -53,7 +58,7 @@ export default async function InvoicesPage() {
                   {invoices.map((invoice) => (
                     <tr key={invoice.id} className="table-row">
                       <td className="table-cell">
-                        <span className="font-mono text-sm text-victoria-navy-900">
+                        <span className="font-mono text-sm font-medium text-victoria-navy-900">
                           #{invoice.stripe_invoice_id.slice(-8).toUpperCase()}
                         </span>
                       </td>
@@ -63,7 +68,7 @@ export default async function InvoicesPage() {
                       <td className="table-cell text-victoria-slate-600">
                         {invoice.period_start && invoice.period_end ? (
                           <span>
-                            {formatDate(invoice.period_start)} - {formatDate(invoice.period_end)}
+                            {formatDate(invoice.period_start)} – {formatDate(invoice.period_end)}
                           </span>
                         ) : (
                           '-'
@@ -78,13 +83,13 @@ export default async function InvoicesPage() {
                         </Badge>
                       </td>
                       <td className="table-cell">
-                        <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center justify-center gap-1">
                           {invoice.invoice_url && (
                             <a
                               href={invoice.invoice_url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-2 text-victoria-slate-500 hover:text-victoria-navy-700 transition-colors"
+                              className="p-2 text-victoria-slate-500 hover:text-victoria-navy-700 hover:bg-victoria-slate-100 rounded-lg transition-colors"
                               title="View Invoice"
                             >
                               <ExternalLink className="w-4 h-4" />
@@ -95,7 +100,7 @@ export default async function InvoicesPage() {
                               href={invoice.invoice_pdf}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-2 text-victoria-slate-500 hover:text-victoria-navy-700 transition-colors"
+                              className="p-2 text-victoria-slate-500 hover:text-victoria-navy-700 hover:bg-victoria-slate-100 rounded-lg transition-colors"
                               title="Download PDF"
                             >
                               <Download className="w-4 h-4" />
@@ -109,9 +114,9 @@ export default async function InvoicesPage() {
               </table>
             </div>
           ) : (
-            <div className="text-center py-12">
+            <div className="text-center py-14">
               <FileText className="w-12 h-12 text-victoria-slate-300 mx-auto mb-4" />
-              <p className="text-victoria-slate-600">No invoices found</p>
+              <p className="text-victoria-slate-600 font-medium">No invoices found</p>
               <p className="text-sm text-victoria-slate-500 mt-1">
                 Your invoices will appear here after your first subscription payment.
               </p>

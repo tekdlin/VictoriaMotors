@@ -139,36 +139,45 @@ export default function IndividualRegistrationPage() {
 
   return (
     <div className="max-w-lg mx-auto">
-      {/* Progress */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-2">
-          {[1, 2, 3, 4].map((s) => (
-            <div
-              key={s}
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
-                s === step
-                  ? 'bg-victoria-navy-900 text-white'
-                  : s < step
-                  ? 'bg-victoria-gold-500 text-victoria-navy-900'
-                  : 'bg-victoria-slate-200 text-victoria-slate-500'
-              }`}
-            >
-              {s}
+      {/* Progress stepper with connecting line */}
+      <div className="mb-10">
+        <div className="flex items-center w-full">
+          {[1, 2, 3, 4].map((s, i) => (
+            <div key={s} className="flex items-center flex-1 last:flex-none">
+              <div
+                className={`relative z-10 w-10 h-10 rounded-xl flex items-center justify-center text-sm font-semibold transition-all duration-300 shrink-0 ${
+                  s === step
+                    ? 'bg-victoria-navy-900 text-white shadow-victoria ring-4 ring-victoria-navy-900/10'
+                    : s < step
+                    ? 'bg-victoria-gold-500 text-victoria-navy-900'
+                    : 'bg-victoria-slate-100 text-victoria-slate-500'
+                }`}
+              >
+                {s}
+              </div>
+              {i < 3 && (
+                <div className="flex-1 h-1 mx-0.5 min-w-[12px] rounded-full bg-victoria-slate-200 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-victoria-gold-500 transition-all duration-300 ease-out"
+                    style={{ width: step > s ? '100%' : '0%' }}
+                  />
+                </div>
+              )}
             </div>
           ))}
         </div>
-        <div className="flex justify-between text-xs text-victoria-slate-500">
-          <span>Personal</span>
-          <span>Address</span>
-          <span>Documents</span>
-          <span>Payment</span>
+        <div className="flex mt-3">
+          <span className="text-xs font-medium text-victoria-slate-500 flex-1 text-center">Personal</span>
+          <span className="text-xs font-medium text-victoria-slate-500 flex-1 text-center">Address</span>
+          <span className="text-xs font-medium text-victoria-slate-500 flex-1 text-center">Documents</span>
+          <span className="text-xs font-medium text-victoria-slate-500 flex-1 text-center">Payment</span>
         </div>
       </div>
 
-      <h2 className="font-display text-2xl font-bold text-victoria-navy-900 mb-2">
+      <h2 className="font-display text-2xl font-bold text-victoria-navy-900 mb-2 tracking-tight">
         Individual Registration
       </h2>
-      <p className="text-victoria-slate-600 mb-6">
+      <p className="text-victoria-slate-600 mb-6 text-sm leading-relaxed">
         {step === 1 && 'Enter your personal information.'}
         {step === 2 && 'Enter your address details.'}
         {step === 3 && 'Upload your driver\'s license.'}

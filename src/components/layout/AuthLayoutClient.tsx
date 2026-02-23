@@ -93,54 +93,56 @@ export function AuthLayoutClient({
   const config = getConfig(pathname ?? '');
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left side - Dynamic branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-victoria-gradient relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-        <div className="absolute top-20 right-10 w-72 h-72 bg-victoria-gold-500/20 rounded-full blur-3xl" />
+    <div className="min-h-screen lg:flex">
+      {/* Left side - Fixed branding (desktop only) */}
+      <div className="hidden lg:flex fixed top-0 left-0 bottom-0 w-1/2 bg-victoria-navy-950 overflow-hidden">
+        <div className="absolute inset-0 bg-victoria-gradient-hero" />
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.07]" />
+        <div className="absolute top-20 right-10 w-80 h-80 bg-victoria-gold-500/15 rounded-full blur-3xl" />
         <div className="absolute bottom-20 left-10 w-96 h-96 bg-victoria-gold-500/10 rounded-full blur-3xl" />
+        <div className="absolute inset-0 bg-mesh-subtle" />
 
-        <div className="relative z-10 flex flex-col justify-between p-12">
+        <div className="relative z-10 flex flex-col justify-between p-14 w-full">
           <Link
             href="/"
-            className="flex items-center gap-2 w-fit transition-opacity hover:opacity-90"
+            className="flex items-center gap-2.5 w-fit transition-opacity hover:opacity-90"
           >
-            <div className="w-12 h-12 bg-victoria-gold-500 rounded-xl flex items-center justify-center">
-              <Car className="w-7 h-7 text-victoria-navy-900" />
+            <div className="w-12 h-12 bg-victoria-gold-500 rounded-xl flex items-center justify-center shadow-victoria">
+              <Car className="w-6 h-6 text-victoria-navy-900" />
             </div>
-            <span className="font-display text-2xl font-bold text-white">
+            <span className="font-display text-2xl font-bold text-white tracking-tight">
               Victoria Motors
             </span>
           </Link>
 
           <div className="space-y-6">
-            <div className="flex items-center gap-3 text-white/90">
+            <div className="flex items-center gap-3 text-white/95">
               {config.icon}
             </div>
-            <h1 className="font-display text-4xl font-bold text-white leading-tight">
+            <h1 className="font-display text-4xl font-bold text-white leading-tight tracking-tight [text-shadow:0_1px_2px_rgba(0,0,0,0.2)]">
               {config.headline}
             </h1>
-            <p className="text-victoria-slate-300 text-lg max-w-md">
+            <p className="text-white/90 text-lg max-w-md leading-relaxed">
               {config.description}
             </p>
           </div>
 
           {config.showStats !== false && (
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-10">
               <div>
-                <p className="text-3xl font-display font-bold text-victoria-gold-400">
+                <p className="text-3xl font-display font-bold text-victoria-gold-400 tracking-tight">
                   10K+
                 </p>
-                <p className="text-victoria-slate-400 text-sm">
+                <p className="text-white/80 text-sm mt-0.5">
                   Happy Customers
                 </p>
               </div>
-              <div className="w-px h-12 bg-victoria-navy-700" />
+              <div className="w-px h-12 bg-white/20 rounded-full" />
               <div>
-                <p className="text-3xl font-display font-bold text-victoria-gold-400">
+                <p className="text-3xl font-display font-bold text-victoria-gold-400 tracking-tight">
                   4.9★
                 </p>
-                <p className="text-victoria-slate-400 text-sm">
+                <p className="text-white/80 text-sm mt-0.5">
                   Customer Rating
                 </p>
               </div>
@@ -149,25 +151,27 @@ export function AuthLayoutClient({
         </div>
       </div>
 
-      {/* Right side - Form / content */}
-      <div className="flex-1 flex items-center justify-center p-6 sm:p-8">
-        <div className="w-full max-w-md">
-          {/* Mobile Logo */}
-          <div className="lg:hidden mb-8 text-center">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 transition-opacity hover:opacity-90"
-            >
-              <div className="w-10 h-10 bg-victoria-navy-900 rounded-lg flex items-center justify-center">
-                <Car className="w-6 h-6 text-victoria-gold-400" />
-              </div>
-              <span className="font-display text-xl font-bold text-victoria-navy-900">
-                Victoria Motors
-              </span>
-            </Link>
-          </div>
+      {/* Right side - Scrollable form / content */}
+      <div className="flex-1 lg:ml-[50%] lg:h-screen lg:overflow-y-auto bg-white">
+        <div className="min-h-full flex items-center justify-center p-6 sm:p-10">
+          <div className="w-full max-w-md">
+            {/* Mobile Logo */}
+            <div className="lg:hidden mb-10 text-center">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2.5 transition-opacity hover:opacity-90"
+              >
+                <div className="w-10 h-10 bg-victoria-gradient rounded-xl flex items-center justify-center shadow-victoria">
+                  <Car className="w-5 h-5 text-victoria-gold-400" />
+                </div>
+                <span className="font-display text-xl font-bold text-victoria-navy-900 tracking-tight">
+                  Victoria Motors
+                </span>
+              </Link>
+            </div>
 
-          {children}
+            {children}
+          </div>
         </div>
       </div>
     </div>

@@ -24,11 +24,11 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             />
             <div
               className={cn(
-                'w-5 h-5 rounded border-2 transition-all duration-200',
-                'peer-focus:ring-2 peer-focus:ring-victoria-navy-500 peer-focus:ring-offset-2',
+                'w-5 h-5 rounded-md border-2 transition-all duration-200',
+                'peer-focus:ring-2 peer-focus:ring-victoria-navy-400/40 peer-focus:ring-offset-2',
                 'peer-checked:bg-victoria-navy-900 peer-checked:border-victoria-navy-900',
                 error
-                  ? 'border-red-500'
+                  ? 'border-red-400'
                   : 'border-victoria-slate-300 group-hover:border-victoria-slate-400',
                 className
               )}

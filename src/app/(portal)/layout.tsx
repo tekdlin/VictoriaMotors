@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/server/services/auth.service';
 import { getCustomerProfileByUserId, getCustomerDisplayName } from '@/server/services/customer.service';
-import { PortalSidebar } from '@/components/layout';
+import { PortalLayoutClient } from '@/components/layout';
 
 export default async function PortalLayout({
   children,
@@ -15,14 +15,8 @@ export default async function PortalLayout({
   const customerName = getCustomerDisplayName(customer, user.email ?? undefined);
 
   return (
-    <div className="min-h-screen bg-victoria-slate-50">
-      <PortalSidebar customerName={customerName || undefined} />
-      
-      <main className="ml-64 min-h-screen">
-        <div className="p-8">
-          {children}
-        </div>
-      </main>
-    </div>
+    <PortalLayoutClient customerName={customerName || undefined}>
+      {children}
+    </PortalLayoutClient>
   );
 }

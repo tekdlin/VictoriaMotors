@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { DM_Sans, Playfair_Display, JetBrains_Mono } from 'next/font/google';
+import { DM_Sans, Fraunces, JetBrains_Mono } from 'next/font/google';
 import { Providers } from './providers';
 import './globals.css';
 
@@ -9,9 +9,9 @@ const dmSans = DM_Sans({
   display: 'swap',
 });
 
-const playfair = Playfair_Display({
+const fraunces = Fraunces({
   subsets: ['latin'],
-  variable: '--font-playfair',
+  variable: '--font-display',
   display: 'swap',
 });
 
@@ -58,9 +58,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${playfair.variable} ${jetbrains.variable}`}
+      className={`${dmSans.variable} ${fraunces.variable} ${jetbrains.variable}`}
     >
-      <body className="min-h-screen bg-white font-sans antialiased">
+      <body className="min-h-screen bg-victoria-slate-50/70 font-sans antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>
