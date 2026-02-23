@@ -4,7 +4,7 @@
  */
 
 export type SubscriptionPlanItem = {
-  id: 'monthly' | 'yearly';
+  id: 'monthly' | 'fiscal';
   name: string;
   price: number;
   interval: 'month' | 'year';
@@ -30,12 +30,12 @@ export const SUBSCRIPTION_PLANS: Record<string, SubscriptionPlanItem> = {
       'Email support',
     ],
   },
-  yearly: {
-    id: 'yearly',
-    name: 'Yearly Plan',
+  fiscal: {
+    id: 'fiscal',
+    name: 'Fiscal Subscription',
     price: 249.99,
     interval: 'year',
-    priceId: typeof process !== 'undefined' ? process.env.STRIPE_YEARLY_PRICE_ID || '' : '',
+    priceId: typeof process !== 'undefined' ? process.env.STRIPE_FISCAL_PRICE_ID || process.env.STRIPE_YEARLY_PRICE_ID || '' : '',
     trialDays: 7,
     features: [
       '7-day free trial',

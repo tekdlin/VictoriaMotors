@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
+import { useState, useEffect } from 'react';
+import { cn, scrollToHash } from '@/lib/utils';
 import { Button } from '@/components/ui';
 import { Menu, X, Car, User, LogOut } from 'lucide-react';
 import { useSignOut } from '@/hooks/api';
@@ -12,9 +12,13 @@ interface HeaderProps {
   user?: { email: string } | null;
 }
 
+const SECTION_IDS = ['how-it-works', 'pricing', 'contact'] as const;
+const ACTIVE_ZONE_TOP = 120;
+
 export function Header({ user }: HeaderProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('');
   const signOutMutation = useSignOut();
   const router = useRouter();
 
@@ -23,43 +27,94 @@ export function Header({ user }: HeaderProps) {
     router.push('/');
   };
 
+  // Update active nav based on scroll position (home page only)
+  useEffect(() => {
+    if (pathname !== '/') {
+      setActiveSection('');
+      return;
+    }
+
+    let ticking = false;
+    const updateActiveSection = () => {
+      let current = '';
+      for (let i = SECTION_IDS.length - 1; i >= 0; i--) {
+        const el = document.getElementById(SECTION_IDS[i]);
+        if (el) {
+          const top = el.getBoundingClientRect().top;
+          if (top <= ACTIVE_ZONE_TOP) {
+            current = SECTION_IDS[i];
+            break;
+          }
+        }
+      }
+      setActiveSection((prev) => (prev !== current ? current : prev));
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateActiveSection);
+        ticking = true;
+      }
+    };
+
+    updateActiveSection();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [pathname]);
+
   const navigation = [
-    { name: 'Home', href: '/' },
-    { name: 'How It Works', href: '/#how-it-works' },
-    { name: 'Pricing', href: '/#pricing' },
-    { name: 'Contact', href: '/#contact' },
+    { name: 'Home', href: '/', sectionId: '' },
+    { name: 'How It Works', href: '/#how-it-works', sectionId: 'how-it-works' },
+    { name: 'Pricing', href: '/#pricing', sectionId: 'pricing' },
+    { name: 'Contact', href: '/#contact', sectionId: 'contact' },
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-victoria-slate-100">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header
+      className={cn(
+        'fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-victoria-slate-200/60 shadow-victoria',
+        mobileMenuOpen && 'h-dvh md:h-auto'
+      )}
+    >
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full md:h-auto flex flex-col">
+        <div className="flex items-center justify-between h-16 shrink-0">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-victoria-gradient rounded-lg flex items-center justify-center">
-              <Car className="w-6 h-6 text-victoria-gold-400" />
+          <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-90">
+            <div className="w-10 h-10 bg-victoria-gradient rounded-xl flex items-center justify-center shadow-victoria">
+              <Car className="w-5 h-5 text-victoria-gold-400" />
             </div>
-            <span className="font-display text-xl font-bold text-victoria-navy-900">
+            <span className="font-display text-xl font-bold text-victoria-navy-900 tracking-tight">
               Victoria Motors
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            {navigation.map(item => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={cn(
-                  'text-sm font-medium transition-colors',
-                  pathname === item.href
-                    ? 'text-victoria-navy-900'
-                    : 'text-victoria-slate-600 hover:text-victoria-navy-900'
-                )}
-              >
-                {item.name}
-              </Link>
-            ))}
+          <div className="hidden md:flex items-center gap-1">
+            {navigation.map((item) => {
+              const isActive =
+                pathname === '/' ? activeSection === item.sectionId : pathname === item.href;
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  onClick={(e) => {
+                    if (pathname === '/' && item.sectionId) {
+                      e.preventDefault();
+                      scrollToHash(item.href);
+                    }
+                  }}
+                  className={cn(
+                    'px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
+                    isActive
+                      ? 'text-victoria-navy-900 bg-victoria-navy-100 ring-1 ring-victoria-navy-200 font-semibold'
+                      : 'text-victoria-slate-600 hover:text-victoria-navy-900 hover:bg-victoria-slate-50'
+                  )}
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Desktop Auth Buttons */}
@@ -104,23 +159,33 @@ export function Header({ user }: HeaderProps) {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-victoria-slate-100 animate-slide-down">
-            <div className="flex flex-col gap-2">
-              {navigation.map(item => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={cn(
-                    'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
-                    pathname === item.href
-                      ? 'bg-victoria-navy-50 text-victoria-navy-900'
-                      : 'text-victoria-slate-600 hover:bg-victoria-slate-50'
-                  )}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
+          <div className="md:hidden flex-1 min-h-0 flex flex-col py-4 border-t border-victoria-slate-200/60 animate-slide-down overflow-y-auto">
+            <div className="flex flex-col gap-1">
+              {navigation.map((item) => {
+                const isActive =
+                  pathname === '/' ? activeSection === item.sectionId : pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={(e) => {
+                      if (pathname === '/' && item.sectionId) {
+                        e.preventDefault();
+                        scrollToHash(item.href);
+                      }
+                      setMobileMenuOpen(false);
+                    }}
+                    className={cn(
+                      'px-4 py-3 rounded-xl text-sm font-medium transition-colors',
+                      isActive
+                        ? 'bg-victoria-navy-100 text-victoria-navy-900 ring-1 ring-victoria-navy-200 font-semibold'
+                        : 'text-victoria-slate-600 hover:bg-victoria-slate-50'
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
               <hr className="my-2 border-victoria-slate-100" />
               {user ? (
                 <>

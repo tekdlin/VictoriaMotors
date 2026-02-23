@@ -1,6 +1,11 @@
+import { cache } from 'react';
 import { createServerSupabaseClient, createAdminSupabaseClient } from '@/server/db/supabase';
 
-export async function getCurrentUser() {
+/**
+ * Cached per-request so layout and page (and multiple components) share one auth call.
+ * Makes navigation between authenticated pages feel instant instead of double-fetching.
+ */
+export const getCurrentUser = cache(async () => {
   const supabase = await createServerSupabaseClient();
   const {
     data: { user },
@@ -8,7 +13,7 @@ export async function getCurrentUser() {
   } = await supabase.auth.getUser();
   if (error) return { user: null, error };
   return { user, error: null };
-}
+});
 
 export async function signInWithPassword(email: string, password: string) {
   const supabase = await createServerSupabaseClient();

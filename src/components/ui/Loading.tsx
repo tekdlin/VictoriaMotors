@@ -15,7 +15,7 @@ export function Spinner({ size = 'md', className }: SpinnerProps) {
   return (
     <div
       className={cn(
-        'animate-spin rounded-full border-2 border-victoria-slate-200 border-t-victoria-navy-900',
+        'animate-spin rounded-full border-2 border-victoria-slate-200 border-t-victoria-navy-800',
         sizes[size],
         className
       )}
@@ -39,7 +39,7 @@ export function LoadingState({ message = 'Loading...', className }: LoadingState
 
 export function PageLoader() {
   return (
-    <div className="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-white/90 backdrop-blur-md z-50 flex items-center justify-center">
       <div className="flex flex-col items-center">
         <Spinner size="lg" />
         <p className="mt-4 text-victoria-navy-700 font-medium">Loading...</p>

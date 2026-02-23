@@ -76,19 +76,22 @@ export default function PortalDashboardPage() {
       : 0;
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-8 lg:space-y-10 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl font-bold text-victoria-navy-900">
+          <p className="text-sm font-medium text-victoria-gold-600 uppercase tracking-widest mb-2">
+            Your account
+          </p>
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-victoria-navy-900 tracking-tight">
             Dashboard
           </h1>
-          <p className="text-victoria-slate-600 mt-1">
-            Welcome back! Here&apos;s an overview of your account.
+          <p className="text-victoria-slate-600 mt-1.5 text-sm leading-relaxed max-w-lg">
+            Welcome back! Here&apos;s an overview of your account and recent activity.
           </p>
         </div>
-        <Link href="/portal/topup">
-          <Button variant="secondary">
+        <Link href="/portal/topup" className="shrink-0">
+          <Button variant="secondary" size="lg">
             <PlusCircle className="w-4 h-4 mr-2" />
             Add to Deposit
           </Button>
@@ -98,22 +101,26 @@ export default function PortalDashboardPage() {
       {/* Account Status Alert */}
       {customer.account_status !== 'active' && (
         <div
-          className={`p-4 rounded-xl flex items-start gap-3 ${
+          className={`p-5 rounded-2xl flex items-start gap-4 border ${
             customer.account_status === 'payment_pending'
-              ? 'bg-amber-50 border border-amber-200'
-              : 'bg-red-50 border border-red-200'
+              ? 'bg-amber-50/95 border-amber-200/80'
+              : 'bg-red-50/95 border-red-200/80'
           }`}
         >
-          <AlertCircle
-            className={`w-5 h-5 mt-0.5 ${
-              customer.account_status === 'payment_pending'
-                ? 'text-amber-600'
-                : 'text-red-600'
-            }`}
-          />
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+            customer.account_status === 'payment_pending' ? 'bg-amber-100' : 'bg-red-100'
+          }`}>
+            <AlertCircle
+              className={`w-5 h-5 ${
+                customer.account_status === 'payment_pending'
+                  ? 'text-amber-600'
+                  : 'text-red-600'
+              }`}
+            />
+          </div>
           <div>
             <p
-              className={`font-medium ${
+              className={`font-semibold ${
                 customer.account_status === 'payment_pending'
                   ? 'text-amber-800'
                   : 'text-red-800'
@@ -124,7 +131,7 @@ export default function PortalDashboardPage() {
                 : 'Account Closed'}
             </p>
             <p
-              className={`text-sm ${
+              className={`text-sm mt-1 ${
                 customer.account_status === 'payment_pending'
                   ? 'text-amber-700'
                   : 'text-red-700'
@@ -139,77 +146,77 @@ export default function PortalDashboardPage() {
       )}
 
       {/* Stats Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card variant="elevated">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <Card variant="elevated" className="rounded-3xl overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-victoria-navy-100 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-victoria-navy-100 rounded-xl flex items-center justify-center border border-victoria-navy-200/50">
                 <Car className="w-6 h-6 text-victoria-navy-700" />
               </div>
               <Badge status={customer.account_status}>
                 {capitalize(customer.account_status)}
               </Badge>
             </div>
-            <p className="text-sm text-victoria-slate-600">Customer Number</p>
-            <p className="text-xl font-display font-bold text-victoria-navy-900 mt-1">
+            <p className="text-sm font-medium text-victoria-slate-500 uppercase tracking-wide">Customer Number</p>
+            <p className="text-xl font-display font-bold text-victoria-navy-900 mt-1 tracking-tight">
               {customer.customer_number || 'VM-098275'}
             </p>
           </CardContent>
         </Card>
 
-        <Card variant="elevated">
+        <Card variant="elevated" className="rounded-3xl overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-victoria-gold-100 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-victoria-gold-100 rounded-xl flex items-center justify-center border border-victoria-gold-200/60">
                 <TrendingUp className="w-6 h-6 text-victoria-gold-700" />
               </div>
             </div>
-            <p className="text-sm text-victoria-slate-600">Purchase Value</p>
-            <p className="text-xl font-display font-bold text-victoria-navy-900 mt-1">
+            <p className="text-sm font-medium text-victoria-slate-500 uppercase tracking-wide">Purchase Value</p>
+            <p className="text-xl font-display font-bold text-victoria-navy-900 mt-1 tracking-tight">
               {formatCurrency(customer.purchase_value)}
             </p>
           </CardContent>
         </Card>
 
-        <Card variant="elevated">
+        <Card variant="elevated" className="rounded-3xl overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center border border-emerald-200/60">
                 <Shield className="w-6 h-6 text-emerald-700" />
               </div>
             </div>
-            <p className="text-sm text-victoria-slate-600">Security Deposit</p>
-            <p className="text-xl font-display font-bold text-victoria-navy-900 mt-1">
+            <p className="text-sm font-medium text-victoria-slate-500 uppercase tracking-wide">Security Deposit</p>
+            <p className="text-xl font-display font-bold text-victoria-navy-900 mt-1 tracking-tight">
               {formatCurrency(customer.security_deposit_paid)}
               <span className="text-sm font-normal text-victoria-slate-500">
                 {' '}/ {formatCurrency(customer.security_deposit_required)}
               </span>
             </p>
-            <div className="mt-2 h-2 bg-victoria-slate-200 rounded-full overflow-hidden">
+            <div className="mt-3 h-2 bg-victoria-slate-100 rounded-full overflow-hidden">
               <div
-                className="h-full bg-emerald-500 rounded-full transition-all"
+                className="h-full bg-emerald-500 rounded-full transition-all duration-300"
                 style={{ width: `${Math.min(depositProgress, 100)}%` }}
               />
             </div>
           </CardContent>
         </Card>
 
-        <Card variant="elevated">
+        <Card variant="elevated" className="rounded-3xl overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-blue-700" />
+              <div className="w-12 h-12 bg-victoria-navy-100 rounded-xl flex items-center justify-center border border-victoria-navy-200/50">
+                <Calendar className="w-6 h-6 text-victoria-navy-600" />
               </div>
               <Badge status={customer.subscription_status || 'pending'}>
                 {capitalize(customer.subscription_status || 'Pending')}
               </Badge>
             </div>
-            <p className="text-sm text-victoria-slate-600">Subscription</p>
-            <p className="text-xl font-display font-bold text-victoria-navy-900 mt-1">
+            <p className="text-sm font-medium text-victoria-slate-500 uppercase tracking-wide">Subscription</p>
+            <p className="text-xl font-display font-bold text-victoria-navy-900 mt-1 tracking-tight">
               {capitalize(customer.subscription_plan || 'None')} Plan
             </p>
             {customer.subscription_current_period_end && (
-              <p className="text-xs text-victoria-slate-500 mt-1">
+              <p className="text-xs text-victoria-slate-500 mt-1.5">
                 Renews {formatDate(customer.subscription_current_period_end)}
               </p>
             )}
@@ -218,17 +225,19 @@ export default function PortalDashboardPage() {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <Card variant="bordered">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-victoria-navy-700" />
+          <Card variant="bordered" className="rounded-3xl border-victoria-slate-200/80 shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-9 h-9 rounded-xl bg-victoria-navy-50 flex items-center justify-center">
+                  <CreditCard className="w-4 h-4 text-victoria-navy-700" />
+                </div>
                 Recent Payments
               </CardTitle>
               <Link
                 href="/portal/payments"
-                className="text-sm text-victoria-navy-700 hover:text-victoria-navy-900"
+                className="text-sm font-medium text-victoria-gold-600 hover:text-victoria-gold-700 transition-colors"
               >
                 View All →
               </Link>
@@ -239,21 +248,21 @@ export default function PortalDashboardPage() {
                   {recentPayments.map((payment) => (
                     <div
                       key={payment.id}
-                      className="py-3 flex items-center justify-between"
+                      className="py-4 flex items-center justify-between first:pt-0"
                     >
                       <div>
                         <p className="font-medium text-victoria-navy-900">
                           {capitalize(payment.payment_type.replace('_', ' '))}
                         </p>
-                        <p className="text-sm text-victoria-slate-500">
+                        <p className="text-sm text-victoria-slate-500 mt-0.5">
                           {formatDate(payment.created_at)}
                         </p>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right flex items-center gap-3">
                         <p className="font-display font-semibold text-victoria-navy-900">
                           {formatCurrency(payment.amount)}
                         </p>
-                        <Badge status={payment.status} className="mt-1">
+                        <Badge status={payment.status}>
                           {capitalize(payment.status)}
                         </Badge>
                       </div>
@@ -261,22 +270,29 @@ export default function PortalDashboardPage() {
                   ))}
                 </div>
               ) : (
-                <p className="text-victoria-slate-500 text-center py-8">
-                  No payments yet
-                </p>
+                <div className="text-center py-10">
+                  <CreditCard className="w-10 h-10 text-victoria-slate-300 mx-auto mb-3" />
+                  <p className="text-victoria-slate-600 font-medium">No payments yet</p>
+                  <p className="text-sm text-victoria-slate-500 mt-1">Your recent payments will appear here.</p>
+                  <Link href="/portal/topup" className="inline-block mt-4">
+                    <Button variant="outline" size="sm">Add to deposit</Button>
+                  </Link>
+                </div>
               )}
             </CardContent>
           </Card>
 
-          <Card variant="bordered">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-victoria-navy-700" />
+          <Card variant="bordered" className="rounded-3xl border-victoria-slate-200/80 shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="w-9 h-9 rounded-xl bg-victoria-navy-50 flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-victoria-navy-700" />
+                </div>
                 Recent Invoices
               </CardTitle>
               <Link
                 href="/portal/invoices"
-                className="text-sm text-victoria-navy-700 hover:text-victoria-navy-900"
+                className="text-sm font-medium text-victoria-gold-600 hover:text-victoria-gold-700 transition-colors"
               >
                 View All →
               </Link>
@@ -287,13 +303,13 @@ export default function PortalDashboardPage() {
                   {recentInvoices.map((invoice) => (
                     <div
                       key={invoice.id}
-                      className="py-3 flex items-center justify-between"
+                      className="py-4 flex items-center justify-between first:pt-0"
                     >
                       <div>
                         <p className="font-medium text-victoria-navy-900">
                           Invoice #{invoice.stripe_invoice_id.slice(-8)}
                         </p>
-                        <p className="text-sm text-victoria-slate-500">
+                        <p className="text-sm text-victoria-slate-500 mt-0.5">
                           {formatDate(invoice.created_at)}
                         </p>
                       </div>
@@ -311,7 +327,8 @@ export default function PortalDashboardPage() {
                             href={invoice.invoice_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-victoria-slate-400 hover:text-victoria-navy-700"
+                            className="p-2 text-victoria-slate-400 hover:text-victoria-navy-700 rounded-lg hover:bg-victoria-slate-100 transition-colors"
+                            aria-label="View invoice"
                           >
                             <ExternalLink className="w-4 h-4" />
                           </a>
@@ -321,48 +338,53 @@ export default function PortalDashboardPage() {
                   ))}
                 </div>
               ) : (
-                <p className="text-victoria-slate-500 text-center py-8">
-                  No invoices yet
-                </p>
+                <div className="text-center py-10">
+                  <FileText className="w-10 h-10 text-victoria-slate-300 mx-auto mb-3" />
+                  <p className="text-victoria-slate-600 font-medium">No invoices yet</p>
+                  <p className="text-sm text-victoria-slate-500 mt-1">Invoices will appear after subscription payments.</p>
+                  <Link href="/portal/invoices" className="inline-block mt-4">
+                    <Button variant="outline" size="sm">View invoices</Button>
+                  </Link>
+                </div>
               )}
             </CardContent>
           </Card>
         </div>
 
         <div className="space-y-6">
-          <Card variant="bordered">
-            <CardHeader>
-              <CardTitle>Account Details</CardTitle>
+          <Card variant="bordered" className="rounded-3xl border-victoria-slate-200/80 shadow-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Account Details</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-5">
               <div>
-                <p className="text-sm text-victoria-slate-500">Account Type</p>
-                <p className="font-medium text-victoria-navy-900">
+                <p className="text-xs font-medium text-victoria-slate-500 uppercase tracking-wide">Account Type</p>
+                <p className="font-medium text-victoria-navy-900 mt-1">
                   {capitalize(customer.account_type)}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-victoria-slate-500">Email</p>
-                <p className="font-medium text-victoria-navy-900">{customer.email}</p>
+                <p className="text-xs font-medium text-victoria-slate-500 uppercase tracking-wide">Email</p>
+                <p className="font-medium text-victoria-navy-900 mt-1 break-all">{customer.email}</p>
               </div>
               {customer.phone && (
                 <div>
-                  <p className="text-sm text-victoria-slate-500">Phone</p>
-                  <p className="font-medium text-victoria-navy-900">{customer.phone}</p>
+                  <p className="text-xs font-medium text-victoria-slate-500 uppercase tracking-wide">Phone</p>
+                  <p className="font-medium text-victoria-navy-900 mt-1">{customer.phone}</p>
                 </div>
               )}
               <div>
-                <p className="text-sm text-victoria-slate-500">Vehicle Title Status</p>
-                <Badge status={customer.vehicle_title_status} className="mt-1">
+                <p className="text-xs font-medium text-victoria-slate-500 uppercase tracking-wide">Vehicle Title Status</p>
+                <Badge status={customer.vehicle_title_status} className="mt-1.5">
                   {capitalize(customer.vehicle_title_status)}
                 </Badge>
               </div>
             </CardContent>
           </Card>
 
-          <Card variant="bordered">
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+          <Card variant="bordered" className="rounded-3xl border-victoria-slate-200/80 shadow-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <Link href="/portal/topup" className="block">
@@ -381,13 +403,16 @@ export default function PortalDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card variant="bordered" className="bg-victoria-navy-900 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <Clock className="w-5 h-5 text-victoria-gold-400" />
-                <span className="text-victoria-slate-300">Member Since</span>
+          <Card className="relative rounded-3xl bg-victoria-navy-900 text-white border-0 shadow-victoria overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-victoria-gold-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" aria-hidden />
+            <CardContent className="p-6 relative">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-victoria-gold-400" />
+                </div>
+                <span className="text-sm font-medium text-white/80 uppercase tracking-wider">Member Since</span>
               </div>
-              <p className="font-display text-2xl font-bold">
+              <p className="font-display text-2xl font-bold tracking-tight">
                 {formatDate(customer.created_at)}
               </p>
             </CardContent>

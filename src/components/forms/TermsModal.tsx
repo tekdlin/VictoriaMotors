@@ -39,7 +39,7 @@ export function TermsModal({ isOpen, onClose, onAccept }: TermsModalProps) {
 
           <h4 className="text-victoria-navy-900 font-display mt-6">4. Subscription Services</h4>
           <p>
-            Our services are provided on a subscription basis. You may choose between monthly or yearly
+            Our services are provided on a subscription basis. You may choose between monthly or fiscal
             subscription plans. Subscriptions will automatically renew unless cancelled before the renewal date.
           </p>
           <p>

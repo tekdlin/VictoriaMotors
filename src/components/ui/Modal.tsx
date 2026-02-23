@@ -18,7 +18,7 @@ export function Modal({ isOpen, onClose, children, className }: ModalProps) {
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-victoria-navy-950/60 backdrop-blur-sm transition-opacity animate-fade-in"
+        className="fixed inset-0 bg-victoria-navy-950/50 backdrop-blur-md transition-opacity animate-fade-in"
         onClick={onClose}
       />
 
@@ -26,7 +26,7 @@ export function Modal({ isOpen, onClose, children, className }: ModalProps) {
       <div className="flex min-h-full items-center justify-center p-4">
         <div
           className={cn(
-            'relative w-full max-w-lg transform bg-white rounded-2xl shadow-victoria-lg animate-scale-in',
+            'relative w-full max-w-lg transform bg-white rounded-2.5xl shadow-victoria-xl border border-victoria-slate-100 animate-scale-in',
             className
           )}
           onClick={e => e.stopPropagation()}
@@ -53,7 +53,7 @@ export function ModalHeader({ children, onClose, className }: ModalHeaderProps) 
       {onClose && (
         <button
           onClick={onClose}
-          className="text-victoria-slate-400 hover:text-victoria-slate-600 transition-colors"
+          className="p-1.5 rounded-lg text-victoria-slate-400 hover:text-victoria-slate-600 hover:bg-victoria-slate-100 transition-colors"
         >
           <X className="h-5 w-5" />
         </button>
@@ -82,7 +82,7 @@ interface ModalFooterProps {
 
 export function ModalFooter({ children, className }: ModalFooterProps) {
   return (
-    <div className={cn('flex items-center justify-end gap-3 p-6 pt-4 border-t border-victoria-slate-100', className)}>
+    <div className={cn('flex items-center justify-end gap-3 p-6 pt-4 border-t border-victoria-slate-100/80', className)}>
       {children}
     </div>
   );

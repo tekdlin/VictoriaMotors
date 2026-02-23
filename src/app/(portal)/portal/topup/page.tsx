@@ -53,11 +53,14 @@ export default function TopUpPage() {
     <div className="max-w-2xl mx-auto space-y-8 animate-fade-in">
       {/* Header */}
       <div>
-        <h1 className="font-display text-3xl font-bold text-victoria-navy-900">
+        <p className="text-sm font-medium text-victoria-gold-600 uppercase tracking-widest mb-2">
+          Security deposit
+        </p>
+        <h1 className="font-display text-3xl sm:text-4xl font-bold text-victoria-navy-900 tracking-tight">
           Top Up Deposit
         </h1>
-        <p className="text-victoria-slate-600 mt-1">
-          Add funds to your security deposit.
+        <p className="text-victoria-slate-600 mt-1.5 max-w-lg">
+          Add funds to your security deposit. Fully refundable when your agreement ends.
         </p>
       </div>
 
@@ -73,10 +76,12 @@ export default function TopUpPage() {
         </Alert>
       )}
 
-      <Card variant="elevated">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <PlusCircle className="w-5 h-5 text-victoria-navy-700" />
+      <Card variant="elevated" className="rounded-3xl border-victoria-slate-200/80 shadow-victoria">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <div className="w-9 h-9 rounded-xl bg-victoria-gold-100 flex items-center justify-center">
+              <PlusCircle className="w-4 h-4 text-victoria-gold-700" />
+            </div>
             Select Amount
           </CardTitle>
         </CardHeader>
@@ -95,8 +100,8 @@ export default function TopUpPage() {
                     onClick={() => handleQuickSelect(value)}
                     className={`p-4 rounded-xl border-2 font-display font-semibold text-lg transition-all ${
                       amount === value && !customAmount
-                        ? 'border-victoria-navy-900 bg-victoria-navy-50 text-victoria-navy-900'
-                        : 'border-victoria-slate-200 text-victoria-slate-700 hover:border-victoria-slate-300'
+                        ? 'border-victoria-gold-500 bg-victoria-gold-50 text-victoria-navy-900 shadow-sm'
+                        : 'border-victoria-slate-200 text-victoria-slate-700 hover:border-victoria-slate-300 hover:bg-victoria-slate-50/50'
                     }`}
                   >
                     {formatCurrency(value)}
@@ -129,15 +134,15 @@ export default function TopUpPage() {
             </div>
 
             {/* Summary */}
-            <div className="bg-victoria-slate-50 rounded-xl p-6">
+            <div className="bg-victoria-navy-50/80 rounded-2xl p-6 border border-victoria-navy-100/80">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-victoria-slate-600">Top-up Amount</span>
-                <span className="text-2xl font-display font-bold text-victoria-navy-900">
+                <span className="text-sm font-medium text-victoria-slate-600">Top-up Amount</span>
+                <span className="text-2xl font-display font-bold text-victoria-navy-900 tracking-tight">
                   {formatCurrency(amount)}
                 </span>
               </div>
-              <div className="flex items-start gap-3 text-sm text-victoria-slate-600">
-                <Shield className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+              <div className="flex items-start gap-3 text-sm text-victoria-slate-600 p-3 rounded-xl bg-white/60">
+                <Shield className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
                 <p>
                   Your deposit is fully refundable upon completion of your agreement in good standing.
                 </p>
@@ -158,20 +163,20 @@ export default function TopUpPage() {
       </Card>
 
       {/* Info */}
-      <Card variant="bordered" className="bg-victoria-navy-50 border-victoria-navy-100">
+      <Card variant="bordered" className="rounded-3xl bg-victoria-navy-50/60 border-victoria-navy-200/50">
         <CardContent className="p-6">
-          <h3 className="font-display font-semibold text-victoria-navy-900 mb-3">
+          <h3 className="font-display text-lg font-semibold text-victoria-navy-900 tracking-tight mb-4">
             Why Top Up Your Deposit?
           </h3>
-          <ul className="space-y-2">
+          <ul className="space-y-3">
             {[
               'Increase your purchasing power for higher-value vehicles',
               'Build a safety buffer in your account',
               'Fully refundable when your agreement ends',
               'Secure payment processing via Stripe',
             ].map((item, i) => (
-              <li key={i} className="flex items-start gap-2 text-victoria-slate-700">
-                <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+              <li key={i} className="flex items-start gap-3 text-victoria-slate-700">
+                <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
                 {item}
               </li>
             ))}

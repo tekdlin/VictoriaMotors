@@ -38,56 +38,59 @@ export default async function PaymentsPage() {
   };
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-8 lg:space-y-10 animate-fade-in">
       {/* Header */}
       <div>
-        <h1 className="font-display text-3xl font-bold text-victoria-navy-900">
+        <p className="text-sm font-medium text-victoria-gold-600 uppercase tracking-widest mb-2">
+          Transactions
+        </p>
+        <h1 className="font-display text-3xl sm:text-4xl font-bold text-victoria-navy-900 tracking-tight">
           Payment History
         </h1>
-        <p className="text-victoria-slate-600 mt-1">
-          View all your payments and transactions.
+        <p className="text-victoria-slate-600 mt-1.5 max-w-lg">
+          View all your payments and transactions in one place.
         </p>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid md:grid-cols-3 gap-6">
-        <Card variant="elevated">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <Card variant="elevated" className="rounded-3xl border-victoria-slate-200/80 overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+              <div className="w-11 h-11 bg-emerald-100 rounded-xl flex items-center justify-center border border-emerald-200/50">
                 <ArrowDownRight className="w-5 h-5 text-emerald-600" />
               </div>
-              <span className="text-sm text-victoria-slate-600">Total Deposits</span>
+              <span className="text-sm font-medium text-victoria-slate-500 uppercase tracking-wide">Total Deposits</span>
             </div>
-            <p className="text-2xl font-display font-bold text-victoria-navy-900">
+            <p className="text-2xl font-display font-bold text-victoria-navy-900 tracking-tight">
               {formatCurrency(totalDeposits)}
             </p>
           </CardContent>
         </Card>
 
-        <Card variant="elevated">
+        <Card variant="elevated" className="rounded-3xl border-victoria-slate-200/80 overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <RefreshCw className="w-5 h-5 text-blue-600" />
+              <div className="w-11 h-11 bg-victoria-navy-100 rounded-xl flex items-center justify-center border border-victoria-navy-200/50">
+                <RefreshCw className="w-5 h-5 text-victoria-navy-600" />
               </div>
-              <span className="text-sm text-victoria-slate-600">Subscription Payments</span>
+              <span className="text-sm font-medium text-victoria-slate-500 uppercase tracking-wide">Subscription</span>
             </div>
-            <p className="text-2xl font-display font-bold text-victoria-navy-900">
+            <p className="text-2xl font-display font-bold text-victoria-navy-900 tracking-tight">
               {formatCurrency(totalSubscription)}
             </p>
           </CardContent>
         </Card>
 
-        <Card variant="elevated">
+        <Card variant="elevated" className="rounded-3xl border-victoria-slate-200/80 overflow-hidden sm:col-span-2 lg:col-span-1">
           <CardContent className="p-6">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+              <div className="w-11 h-11 bg-amber-100 rounded-xl flex items-center justify-center border border-amber-200/50">
                 <ArrowUpRight className="w-5 h-5 text-amber-600" />
               </div>
-              <span className="text-sm text-victoria-slate-600">Total Refunds</span>
+              <span className="text-sm font-medium text-victoria-slate-500 uppercase tracking-wide">Total Refunds</span>
             </div>
-            <p className="text-2xl font-display font-bold text-victoria-navy-900">
+            <p className="text-2xl font-display font-bold text-victoria-navy-900 tracking-tight">
               {formatCurrency(totalRefunds)}
             </p>
           </CardContent>
@@ -95,10 +98,12 @@ export default async function PaymentsPage() {
       </div>
 
       {/* Payments Table */}
-      <Card variant="bordered">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CreditCard className="w-5 h-5 text-victoria-navy-700" />
+      <Card variant="bordered" className="rounded-3xl border-victoria-slate-200/80 shadow-sm overflow-hidden">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <div className="w-9 h-9 rounded-xl bg-victoria-navy-50 flex items-center justify-center">
+              <CreditCard className="w-4 h-4 text-victoria-navy-700" />
+            </div>
             All Transactions
           </CardTitle>
         </CardHeader>
@@ -160,11 +165,11 @@ export default async function PaymentsPage() {
               </table>
             </div>
           ) : (
-            <div className="text-center py-12">
+            <div className="text-center py-14">
               <CreditCard className="w-12 h-12 text-victoria-slate-300 mx-auto mb-4" />
-              <p className="text-victoria-slate-600">No payments found</p>
+              <p className="text-victoria-slate-600 font-medium">No payments found</p>
               <p className="text-sm text-victoria-slate-500 mt-1">
-                Your payment history will appear here.
+                Your payment history will appear here after your first transaction.
               </p>
             </div>
           )}

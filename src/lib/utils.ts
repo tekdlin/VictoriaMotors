@@ -5,6 +5,19 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/** Fixed header height (h-16) + small gap so section title isn’t under the header. */
+const SCROLL_OFFSET_TOP = 50;
+
+/** Smooth-scroll to an in-page section when href contains a hash (e.g. /#how-it-works). */
+export function scrollToHash(href: string): void {
+  const id = href.split('#')[1];
+  if (!id) return;
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET_TOP;
+  window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+}
+
 export function formatDate(date: string | Date): string {
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
