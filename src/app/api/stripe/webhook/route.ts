@@ -33,12 +33,21 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
-        const customerId = session.metadata?.supabase_customer_id;
-        const securityDeposit = parseFloat(session.metadata?.security_deposit || '0');
+        let customerId = session.metadata?.supabase_customer_id ?? null;
+        let securityDeposit = parseFloat(session.metadata?.security_deposit || '0');
+
+        // In subscription mode, session metadata can be empty; get from subscription if needed
+        if ((!customerId || securityDeposit === 0) && session.subscription) {
+          const sub = await stripe.subscriptions.retrieve(session.subscription as string);
+          const meta = sub.metadata ?? {};
+          customerId = customerId ?? meta.supabase_customer_id ?? null;
+          if (securityDeposit === 0 && meta.security_deposit) {
+            securityDeposit = parseFloat(meta.security_deposit);
+          }
+        }
 
         if (customerId) {
-          // Update customer status and deposit
-          await (supabase.from('customers') as any)
+          const { error: updateError } = await (supabase.from('customers') as any)
             .update({
               account_status: 'active',
               security_deposit_paid: securityDeposit,
@@ -46,6 +55,10 @@ export async function POST(request: NextRequest) {
               subscription_status: 'active',
             })
             .eq('id', customerId);
+
+          if (updateError) {
+            console.error('checkout.session.completed: customer update failed', updateError);
+          }
 
           // Record the payment
           await (supabase.from('payments') as any).insert({
@@ -148,13 +161,28 @@ export async function POST(request: NextRequest) {
         const customerId = subscription.metadata?.supabase_customer_id;
 
         if (customerId) {
+          const updates: Record<string, unknown> = {
+            subscription_status: subscription.status as string,
+            subscription_current_period_end: new Date(
+              subscription.current_period_end * 1000
+            ).toISOString(),
+          };
+          const securityDepositFromMeta = subscription.metadata?.security_deposit
+            ? parseFloat(subscription.metadata.security_deposit)
+            : 0;
+          if (securityDepositFromMeta > 0) {
+            const { data: existing } = await supabase
+              .from('customers')
+              .select('security_deposit_paid')
+              .eq('id', customerId)
+              .single();
+            const current = (existing as { security_deposit_paid?: number } | null)?.security_deposit_paid ?? 0;
+            if (current === 0) {
+              updates.security_deposit_paid = securityDepositFromMeta;
+            }
+          }
           await (supabase.from('customers') as any)
-            .update({
-              subscription_status: subscription.status as any,
-              subscription_current_period_end: new Date(
-                subscription.current_period_end * 1000
-              ).toISOString(),
-            })
+            .update(updates)
             .eq('id', customerId);
         }
         break;

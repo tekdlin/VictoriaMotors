@@ -46,7 +46,7 @@ export const individualRegistrationSchema = z.object({
   ...addressSchema.shape,
   purchase_value: z
     .number()
-    .min(1000, 'Minimum purchase value is $1,000')
+    .min(0, 'Minimum purchase value is $0')
     .max(500000, 'Maximum purchase value is $500,000'),
   subscription_plan: z.enum(['monthly', 'yearly'], {
     required_error: 'Please select a subscription plan',
@@ -74,7 +74,7 @@ export const businessRegistrationSchema = z.object({
   ...addressSchema.shape,
   purchase_value: z
     .number()
-    .min(1000, 'Minimum purchase value is $1,000')
+    .min(0, 'Minimum purchase value is $0')
     .max(2000000, 'Maximum purchase value is $2,000,000'),
   subscription_plan: z.enum(['monthly', 'yearly'], {
     required_error: 'Please select a subscription plan',

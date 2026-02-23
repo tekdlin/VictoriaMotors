@@ -57,15 +57,15 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-victoria-slate-400">
                 <Mail className="w-4 h-4 text-victoria-gold-500" />
-                <a href="mailto:support@victoriamotors.com" className="hover:text-white transition-colors">
-                  support@victoriamotors.com
+                <a href="mailto:contact@victoriamotorsinc.com" className="hover:text-white transition-colors">
+                  contact@victoriamotorsinc.com
                 </a>
               </li>
               <li className="flex items-center gap-2 text-victoria-slate-400">
                 <Phone className="w-4 h-4 text-victoria-gold-500" />
-                <a href="tel:+15551234567" className="hover:text-white transition-colors">
+                {/* <a href="tel:+15551234567" className="hover:text-white transition-colors">
                   (555) 123-4567
-                </a>
+                </a> */}
               </li>
               <li className="flex items-start gap-2 text-victoria-slate-400">
                 <MapPin className="w-4 h-4 text-victoria-gold-500 mt-1" />

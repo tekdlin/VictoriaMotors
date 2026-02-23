@@ -33,7 +33,7 @@ export const SUBSCRIPTION_PLANS: Record<string, SubscriptionPlanItem> = {
   yearly: {
     id: 'yearly',
     name: 'Yearly Plan',
-    price: 499.99,
+    price: 249.99,
     interval: 'year',
     priceId: typeof process !== 'undefined' ? process.env.STRIPE_YEARLY_PRICE_ID || '' : '',
     trialDays: 7,
@@ -48,8 +48,11 @@ export const SUBSCRIPTION_PLANS: Record<string, SubscriptionPlanItem> = {
   },
 };
 
+const MIN_SECURITY_DEPOSIT = 650;
+
 export function calculateSecurityDeposit(purchaseValue: number): number {
-  return Math.round(purchaseValue * 0.1 * 100) / 100;
+  const tenPercent = Math.round(purchaseValue * 0.1 * 100) / 100;
+  return Math.max(MIN_SECURITY_DEPOSIT, tenPercent);
 }
 
 export function formatCurrency(amount: number): string {

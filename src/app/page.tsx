@@ -178,7 +178,7 @@ export default async function HomePage() {
               {
                 icon: Wallet,
                 title: 'Refundable Deposits',
-                description: 'Your security deposit is fully refundable when you complete your agreement.',
+                description: 'Your security deposit is refundable upon request, less applicable fees.',
               },
               {
                 icon: FileText,
@@ -321,7 +321,7 @@ export default async function HomePage() {
                   </div>
                   <div>
                     <p className="font-medium text-victoria-navy-900">Call Us</p>
-                    <p className="text-victoria-slate-600">(555) 123-4567</p>
+                    {/* <p className="text-victoria-slate-600">(555) 123-4567</p> */}
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -330,7 +330,7 @@ export default async function HomePage() {
                   </div>
                   <div>
                     <p className="font-medium text-victoria-navy-900">Email Us</p>
-                    <p className="text-victoria-slate-600">support@victoriamotors.com</p>
+                    <p className="text-victoria-slate-600">contact@victoriamotorsinc.com</p>
                   </div>
                 </div>
               </div>

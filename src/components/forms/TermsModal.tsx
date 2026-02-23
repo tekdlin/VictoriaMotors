@@ -99,8 +99,8 @@ export function TermsModal({ isOpen, onClose, onAccept }: TermsModalProps) {
             For questions about these terms, please contact us at:
           </p>
           <ul>
-            <li>Email: legal@victoriamotors.com</li>
-            <li>Phone: (555) 123-4567</li>
+            <li>Email: contact@victoriamotorsinc.com</li>
+            {/* <li>Phone: (555) 123-4567</li> */}
             <li>Address: 123 Auto Drive, Dallas, TX 75201</li>
           </ul>
         </div>

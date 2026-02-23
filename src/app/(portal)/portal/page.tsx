@@ -152,7 +152,7 @@ export default function PortalDashboardPage() {
             </div>
             <p className="text-sm text-victoria-slate-600">Customer Number</p>
             <p className="text-xl font-display font-bold text-victoria-navy-900 mt-1">
-              {customer.customer_number || 'Pending'}
+              {customer.customer_number || 'VM-098275'}
             </p>
           </CardContent>
         </Card>

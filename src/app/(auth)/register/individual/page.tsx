@@ -321,13 +321,12 @@ export default function IndividualRegistrationPage() {
               label="Intended Vehicle Purchase Value"
               type="number"
               placeholder="25000"
-              defaultValue={1000}
+              defaultValue={0}
               hint="Enter the approximate value of the vehicle you plan to purchase"
               error={errors.purchase_value?.message}
               {...register('purchase_value', { valueAsNumber: true })}
             />
 
-            {purchaseValue > 0 && (
               <Card variant="bordered" className="bg-victoria-gold-50 border-victoria-gold-200">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
@@ -344,7 +343,6 @@ export default function IndividualRegistrationPage() {
                   </p>
                 </CardContent>
               </Card>
-            )}
 
             <div>
               <label className="block text-sm font-medium text-victoria-navy-800 mb-3">
@@ -369,9 +367,7 @@ export default function IndividualRegistrationPage() {
                       />
                       <div>
                         <p className="font-medium text-victoria-navy-900">{plan.name}</p>
-                        {plan.id === 'yearly' && (
-                          <span className="text-xs text-victoria-gold-700 font-medium">Save 2 months!</span>
-                        )}
+                        <span className="text-xs text-emerald-600 font-medium">Billed after 7 days free trial</span>
                       </div>
                     </div>
                     <span className="font-display font-bold text-victoria-navy-900">

@@ -60,7 +60,7 @@ npm install
 3. Create subscription products:
    - Go to **Products** > **Add Product**
    - Create "Monthly Plan" at $49.99/month
-   - Create "Yearly Plan" at $499.99/year
+   - Create "Yearly Plan" at $249.99/year
    - Copy the Price IDs to your environment variables
 
 4. Set up webhooks:
@@ -106,18 +106,13 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ### 6. Test Stripe Webhooks Locally
 
-Install Stripe CLI:
-```bash
-# macOS
-brew install stripe/stripe-cli/stripe
+**For a full step-by-step local setup** (env, Supabase, Stripe test mode, webhook secret), see **[docs/LOCAL_DEVELOPMENT.md](docs/LOCAL_DEVELOPMENT.md)**.
 
-# Or download from https://stripe.com/docs/stripe-cli
-```
-
-Forward webhooks:
+Quick version: install [Stripe CLI](https://stripe.com/docs/stripe-cli), then run:
 ```bash
 stripe listen --forward-to localhost:3000/api/stripe/webhook
 ```
+Use the printed `whsec_...` value as `STRIPE_WEBHOOK_SECRET` in `.env.local` and restart `npm run dev`.
 
 ## 🚀 Deployment
 

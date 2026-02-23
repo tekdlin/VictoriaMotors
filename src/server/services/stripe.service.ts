@@ -60,14 +60,19 @@ export async function createCheckoutSession(
     ],
     subscription_data: {
       trial_period_days: 7,
-      metadata: { supabase_customer_id: customerId, plan: subscriptionPlan },
+      metadata: {
+        supabase_customer_id: customerId,
+        plan: subscriptionPlan,
+        security_deposit: securityDeposit.toString(),
+        purchase_value: purchaseValue.toString(),
+      },
     },
     metadata: {
       supabase_customer_id: customerId,
       security_deposit: securityDeposit.toString(),
       purchase_value: purchaseValue.toString(),
     },
-    success_url: `${APP_URL}/email-confirmation`,
+    success_url: `${APP_URL}/portal`,
     cancel_url: `${APP_URL}/register?canceled=true`,
     allow_promotion_codes: true,
   });
